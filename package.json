@@ -1,12 +1,12 @@
 {
-  "name": "talk-a-tive",
+  "name": "whispers",
   "version": "1.0.0",
   "description": "",
   "main": "server.js",
   "scripts": {
     "start": "nodemon backend/server.js"
   },
-  "author": "Akash Chowdhury",
+  "author": "bsclmr1499",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^2.4.3",

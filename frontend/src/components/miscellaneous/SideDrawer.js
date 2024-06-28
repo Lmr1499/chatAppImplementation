@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import { Button } from "@chakra-ui/button";
 import { Box, Text } from "@chakra-ui/layout";
 import { Input } from "@chakra-ui/input";
 import { Tooltip } from "@chakra-ui/tooltip";
-import { BellIcon,ChevronDownIcon } from "@chakra-ui/icons";
+import { BellIcon, ChevronDownIcon } from "@chakra-ui/icons";
 import { Avatar } from "@chakra-ui/avatar";
 import ChatLoading from "../ChatLoading";
 import { Spinner } from "@chakra-ui/spinner";
@@ -15,26 +15,22 @@ import { useToast } from "@chakra-ui/toast";
 import { Effect } from "react-notification-badge";
 import { getSender } from "../../config/ChatLogics";
 import {
-    Menu,
-    MenuButton,
-    MenuDivider,
-    MenuItem,
-    MenuList,
-  } from "@chakra-ui/menu";
-  import NotificationBadge from "react-notification-badge";
-  import {
-    Drawer,
-    DrawerBody,
-    DrawerContent,
-    DrawerHeader,
-    DrawerOverlay,
-  } from "@chakra-ui/modal";
-  import axios from "axios";
-  import { ChatState } from "../../Context/ChatProvider";
-
-
-
-
+  Menu,
+  MenuButton,
+  MenuDivider,
+  MenuItem,
+  MenuList,
+} from "@chakra-ui/menu";
+import NotificationBadge from "react-notification-badge";
+import {
+  Drawer,
+  DrawerBody,
+  DrawerContent,
+  DrawerHeader,
+  DrawerOverlay,
+} from "@chakra-ui/modal";
+import axios from "axios";
+import { ChatState } from "../../Context/ChatProvider";
 
 const SideDrawer = () => {
   const {
@@ -49,8 +45,6 @@ const SideDrawer = () => {
   const [searchResult, setSearchResult] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingChat, setLoadingChat] = useState(false);
-  
-
 
   const toast = useToast();
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -109,7 +103,7 @@ const SideDrawer = () => {
       };
       const { data } = await axios.post("/api/chat", { userId }, config);
 
-      if (!chats.find((c) => c._id === data._id)){
+      if (!chats.find((c) => c._id === data._id)) {
         setChats([data, ...chats]);
       }
       setSelectedChat(data);
@@ -127,34 +121,40 @@ const SideDrawer = () => {
     }
   };
 
-
-
-
-
   return (
     <>
-        <Box style={{display:"flex", justifyContent:"space-between", alignItems:"center", padding:"5px 10px 5px 10px", background:"white", width:"100%", borderWidth:"5px"}}>
-            <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
-                <Button variant="ghost" onClick={onOpen}>
-                <i className="fas fa-search"></i>
-                <Text display={{ base: "none", md: "flex" }} px={4} >
-                    Search User
-                </Text>
-                </Button>
-            </Tooltip>
-            <Text fontSize="2xl" fontFamily="Work sans">
-                Talk-A-Tive
+      <Box
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          padding: "5px 10px 5px 10px",
+          background: "white",
+          width: "100%",
+          borderWidth: "5px",
+        }}
+      >
+        <Tooltip label="Search Users to chat" hasArrow placement="bottom-end">
+          <Button variant="ghost" onClick={onOpen}>
+            <i className="fas fa-search"></i>
+            <Text display={{ base: "none", md: "flex" }} px={4}>
+              Search User
             </Text>
-            <div>
-                <Menu>
-                    <MenuButton p={1}>
-                    <NotificationBadge
-                    count={notification.length}
-                    effect={Effect.SCALE}
-                  />
-                    <BellIcon fontSize="2xl" m={1} />
-                    </MenuButton>
-                    <MenuList pl={2}>
+          </Button>
+        </Tooltip>
+        <Text fontSize="2xl" fontFamily="Work sans">
+          whispers
+        </Text>
+        <div>
+          <Menu>
+            <MenuButton p={1}>
+              <NotificationBadge
+                count={notification.length}
+                effect={Effect.SCALE}
+              />
+              <BellIcon fontSize="2xl" m={1} />
+            </MenuButton>
+            <MenuList pl={2}>
               {!notification.length && "No New Messages"}
               {notification.map((notif) => (
                 <MenuItem
@@ -170,58 +170,58 @@ const SideDrawer = () => {
                 </MenuItem>
               ))}
             </MenuList>
-                </Menu>
-                <Menu>
-                <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
-                <Avatar
+          </Menu>
+          <Menu>
+            <MenuButton as={Button} bg="white" rightIcon={<ChevronDownIcon />}>
+              <Avatar
                 size="sm"
                 cursor="pointer"
                 name={user.name}
                 src={user.pic}
-                />
-                </MenuButton>
-                <MenuList>
-                <ProfileModal user={user}>
+              />
+            </MenuButton>
+            <MenuList>
+              <ProfileModal user={user}>
                 <MenuItem>My Profile</MenuItem>{" "}
-                </ProfileModal>
-                <MenuDivider />
-                <MenuItem onClick={logoutHandler}>Logout</MenuItem>
-                </MenuList>
-                </Menu>
-            </div>
-        </Box>
-        <Drawer placement='left' onClose={onClose} isOpen={isOpen}>
-          <DrawerOverlay>
-            <DrawerContent>
+              </ProfileModal>
+              <MenuDivider />
+              <MenuItem onClick={logoutHandler}>Logout</MenuItem>
+            </MenuList>
+          </Menu>
+        </div>
+      </Box>
+      <Drawer placement="left" onClose={onClose} isOpen={isOpen}>
+        <DrawerOverlay>
+          <DrawerContent>
             <DrawerHeader borderBottomWidth="1px">Search Users</DrawerHeader>
-              <DrawerBody>
-                <Box style={{display:"flex"}} pb={2}>
+            <DrawerBody>
+              <Box style={{ display: "flex" }} pb={2}>
                 <Input
-                placeholder="Search by name or email"
-                mr={2}
-                value={search}
-                 onChange={(e) => setSearch(e.target.value)}
+                  placeholder="Search by name or email"
+                  mr={2}
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
                 />
-              <Button onClick={handleSearch}>Go</Button>
-                </Box>
-                {loading ? (
-              <ChatLoading />
-            ) : (
-              searchResult?.map((user) => (
-                <UserListItem
-                  key={user._id}
-                  user={user}
-                  handleFunction={() => accessChat(user._id)}
-                />
-              ))
-            )}
-            {loadingChat && <Spinner ml="auto" d="flex" />}
-              </DrawerBody>
-            </DrawerContent>
-          </DrawerOverlay>
-        </Drawer>
+                <Button onClick={handleSearch}>Look up</Button>
+              </Box>
+              {loading ? (
+                <ChatLoading />
+              ) : (
+                searchResult?.map((user) => (
+                  <UserListItem
+                    key={user._id}
+                    user={user}
+                    handleFunction={() => accessChat(user._id)}
+                  />
+                ))
+              )}
+              {loadingChat && <Spinner ml="auto" d="flex" />}
+            </DrawerBody>
+          </DrawerContent>
+        </DrawerOverlay>
+      </Drawer>
     </>
-  )
-}
+  );
+};
 
-export default SideDrawer
+export default SideDrawer;

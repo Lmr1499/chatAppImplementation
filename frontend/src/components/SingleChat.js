@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/layout";
 import "./styles.css";
-import {IconButton} from "@chakra-ui/react";
+import { IconButton } from "@chakra-ui/react";
 import { FormControl, Input, Spinner, useToast } from "@chakra-ui/react";
 import { getSender, getSenderFull } from "../config/ChatLogics";
 import { useEffect, useState } from "react";
@@ -15,11 +15,8 @@ import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModa";
 import { ChatState } from "../Context/ChatProvider";
 
-
-const ENDPOINT ="http://localhost:5000" // "https://talk-a-tive.herokuapp.com"; -> After deployment "http://localhost:5000";
+const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
-
-
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [messages, setMessages] = useState([]);
@@ -29,9 +26,8 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [typing, setTyping] = useState(false);
   const [istyping, setIsTyping] = useState(false);
   const toast = useToast();
-  const { selectedChat, setSelectedChat, user, notification, setNotification } = ChatState();
-
-
+  const { selectedChat, setSelectedChat, user, notification, setNotification } =
+    ChatState();
 
   const defaultOptions = {
     loop: true,
@@ -41,7 +37,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       preserveAspectRatio: "xMidYMid slice",
     },
   };
-
 
   const fetchMessages = async () => {
     if (!selectedChat) return;
@@ -84,7 +79,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
   const sendMessage = async (event) => {
     if (event.key === "Enter" && newMessage) {
-       socket.emit("stop typing", selectedChat._id);
+      socket.emit("stop typing", selectedChat._id);
       try {
         const config = {
           headers: {
@@ -117,123 +112,118 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }
   };
 
-   useEffect(() => {
-     socket = io(ENDPOINT);
-     socket.emit("setup", user);
-     socket.on("connected", () => setSocketConnected(true));
-     socket.on("typing", () => setIsTyping(true));
-     socket.on("stop typing", () => setIsTyping(false));
+  useEffect(() => {
+    socket = io(ENDPOINT);
+    socket.emit("setup", user);
+    socket.on("connected", () => setSocketConnected(true));
+    socket.on("typing", () => setIsTyping(true));
+    socket.on("stop typing", () => setIsTyping(false));
 
-     // eslint-disable-next-line
-   }, []);
+    // eslint-disable-next-line
+  }, []);
 
-  
-
-   useEffect(() => {
-     socket.on("message recieved", (newMessageRecieved) => {
+  useEffect(() => {
+    socket.on("message recieved", (newMessageRecieved) => {
       if (
         !selectedChatCompare || // if chat is not selected or doesn't match current chat
-         selectedChatCompare._id !== newMessageRecieved.chat._id
+        selectedChatCompare._id !== newMessageRecieved.chat._id
       ) {
-          if (!notification.includes(newMessageRecieved)) {
-            setNotification([newMessageRecieved, ...notification]);
-            setFetchAgain(!fetchAgain);
-          }
-       } else {
-         setMessages([...messages, newMessageRecieved]);
-       }
-     });
-   });
+        if (!notification.includes(newMessageRecieved)) {
+          setNotification([newMessageRecieved, ...notification]);
+          setFetchAgain(!fetchAgain);
+        }
+      } else {
+        setMessages([...messages, newMessageRecieved]);
+      }
+    });
+  });
 
-const typingHandler = (e) => {
-  setNewMessage(e.target.value);
+  const typingHandler = (e) => {
+    setNewMessage(e.target.value);
 
-   if (!socketConnected) return;
+    if (!socketConnected) return;
 
-   if (!typing) {
-     setTyping(true);
-     socket.emit("typing", selectedChat._id);
-   }
-   let lastTypingTime = new Date().getTime();
-   var timerLength = 3000;
-   setTimeout(() => {
-     var timeNow = new Date().getTime();
-     var timeDiff = timeNow - lastTypingTime;
-     if (timeDiff >= timerLength && typing) {
-       socket.emit("stop typing", selectedChat._id);
-       setTyping(false);
-     }
-   }, timerLength);
-};
-
+    if (!typing) {
+      setTyping(true);
+      socket.emit("typing", selectedChat._id);
+    }
+    let lastTypingTime = new Date().getTime();
+    var timerLength = 3000;
+    setTimeout(() => {
+      var timeNow = new Date().getTime();
+      var timeDiff = timeNow - lastTypingTime;
+      if (timeDiff >= timerLength && typing) {
+        socket.emit("stop typing", selectedChat._id);
+        setTyping(false);
+      }
+    }, timerLength);
+  };
 
   return (
     <>
-       {selectedChat ? (
-            <>
-                <Text
-                fontSize={{base:"28px", md:"30px"}}
-                pb={3}
-                px={2}
-                w="140%"
-                width={{base:"125%", md:"140%"}}
-                fontFamily="Work sans"
-                display="flex"
-                justifyContent={{base:"space-around"}}
-                alignItems="center"
-                >
-                    <IconButton
-                        display={{base:"flex"}}
-                        marginLeft={1}
-                        icon={<ArrowBackIcon />}
-                        onClick={() => setSelectedChat("")}
-                    />
-                    {!selectedChat.isGroupChat ? (
-                        <>
-                        {getSender(user, selectedChat.users)}
-                        <ProfileModal
-                        user={getSenderFull(user, selectedChat.users)}
-                        /> 
-                        </>
-                    ) : (
-                        <>
-                        {selectedChat.chatName.toUpperCase()}
-                        <UpdateGroupChatModal
-                        fetchMessages={fetchMessages}
-                        fetchAgain={fetchAgain}
-                        setFetchAgain={setFetchAgain}
-                        />
-                        </>
-                    )}
-                </Text>
-                <Box
-                display="flex"
-                flexDir="column"
-                justifyContent="flex-end"
-                p={3}
-                bg="#E8E8E8"
-                w="100%"
-                h="100%"
-                borderRadius="lg"
-                overflowY="hidden"
-                >
-                    { loading ? (
-                      <Spinner
-                        size="xl"
-                        width={20}
-                        height={20}
-                        alignSelf="center"
-                        margin="auto"
-                      />
-                    ):(
-                      <>
-                        <div className="messages">
-                          <ScrollableChat messages={messages}/>
-                        </div>
-                      </>
-                    )}
-                    <FormControl onKeyDown={sendMessage} isRequired marginTop={3}>
-                    {istyping ? (
+      {selectedChat ? (
+        <>
+          <Text
+            fontSize={{ base: "28px", md: "30px" }}
+            pb={3}
+            px={2}
+            w="140%"
+            width={{ base: "125%", md: "140%" }}
+            fontFamily="Work sans"
+            display="flex"
+            justifyContent={{ base: "space-around" }}
+            alignItems="center"
+          >
+            <IconButton
+              display={{ base: "flex" }}
+              marginLeft={1}
+              icon={<ArrowBackIcon />}
+              onClick={() => setSelectedChat("")}
+            />
+            {!selectedChat.isGroupChat ? (
+              <>
+                {getSender(user, selectedChat.users)}
+                <ProfileModal user={getSenderFull(user, selectedChat.users)} />
+              </>
+            ) : (
+              <>
+                {selectedChat.chatName.toUpperCase()}
+                <UpdateGroupChatModal
+                  fetchMessages={fetchMessages}
+                  fetchAgain={fetchAgain}
+                  setFetchAgain={setFetchAgain}
+                />
+              </>
+            )}
+          </Text>
+          <Box
+            display="flex"
+            flexDir="column"
+            justifyContent="flex-end"
+            p={3}
+            bg="#E8E8E8"
+            w="100%"
+            h="100%"
+            borderRadius="lg"
+            overflowY="hidden"
+          >
+            {loading ? (
+              <Spinner
+                size="xl"
+                width={20}
+                height={20}
+                alignSelf="center"
+                margin="auto"
+              />
+            ) : (
+              <>
+                <div className="messages">
+                  <ScrollableChat messages={messages} />
+                </div>
+              </>
+            )}
+            <FormControl onKeyDown={sendMessage} isRequired marginTop={3}>
+              {istyping ? (
                 <div>
                   <Lottie
                     options={defaultOptions}
@@ -245,21 +235,26 @@ const typingHandler = (e) => {
               ) : (
                 <></>
               )}
-                      <Input
-                        variant="filled"
-                        bg="#E0E0E0"
-                        placeholder="Entar a Message.."
-                        onChange={typingHandler}
-                        value={newMessage}
-                      />
-                      
-                      
-                    </FormControl>
-                </Box>
-            </>
-        ) : (
+              <Input
+                variant="filled"
+                bg="#E0E0E0"
+                placeholder="Message.."
+                onChange={typingHandler}
+                value={newMessage}
+              />
+            </FormControl>
+          </Box>
+        </>
+      ) : (
         // to get socket.io on same page
-        <Box style={{display:"flex", justifyContent:"center", alignItems:"center", height:"100%"}}>
+        <Box
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
           <Text fontSize="3xl" pb={3} fontFamily="Work sans">
             Click on a user to start chatting
           </Text>
