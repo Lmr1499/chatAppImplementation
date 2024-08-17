@@ -1,12 +1,12 @@
-import React from 'react'
+import React from "react";
 import { AddIcon } from "@chakra-ui/icons";
 import { Button } from "@chakra-ui/react";
 import { useToast } from "@chakra-ui/toast";
 import { getSender } from "../config/ChatLogics";
 import ChatLoading from "./ChatLoading";
 import GroupChatModal from "./miscellaneous/GroupChatModal";
- import axios from "axios";
-import {  useEffect,useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { Box, Stack, Text } from "@chakra-ui/layout";
 import { ChatState } from "../Context/ChatProvider";
 
@@ -45,12 +45,9 @@ const MyChats = ({ fetchAgain }) => {
     // eslint-disable-next-line
   }, [fetchAgain]);
 
-
-
-
-  return(
+  return (
     <Box
-    display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
+      display={{ base: selectedChat ? "none" : "flex", md: "flex" }}
       flexDir="column"
       overflowY="hidden"
       alignItems="center"
@@ -60,26 +57,32 @@ const MyChats = ({ fetchAgain }) => {
       borderRadius="lg"
       borderWidth="1px"
     >
-    <Box
-     pb={3}
-     px={3}
-     
-     fontSize={{base:"28px", md:"30px"}}
-     fontFamily="Work sans"
-     style={{display:"flex", justifyContent:"space-between", width:"100%", alignItems:"center"}}
-    >
-    My Chats
-   <GroupChatModal>
-        <Button
-            d="flex"
-            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
-            rightIcon={<AddIcon />}
-          >
+      <Box
+        pb={3}
+        px={3}
+        fontSize={{ base: "28px", md: "30px" }}
+        fontFamily="Work sans"
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          width: "100%",
+          alignItems: "center",
+        }}
+      >
+        Chats
+        <GroupChatModal>
+          <Button d="flex" fontSize={{ base: "17px", md: "10px", lg: "17px" }}>
             New Group Chat
-        </Button>
-   </GroupChatModal>
-    </Box>
-    <Box style={{display:"flex", flexDirection:"column", height:"100%", overflowY:"hidden"}}
+          </Button>
+        </GroupChatModal>
+      </Box>
+      <Box
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          overflowY: "hidden",
+        }}
         p={3}
         bg="#F8F8F8"
         w="100%"
@@ -102,7 +105,6 @@ const MyChats = ({ fetchAgain }) => {
                   {!chat.isGroupChat
                     ? getSender(loggedUser, chat.users)
                     : chat.chatName}
-                    
                 </Text>
                 {chat.latestMessage && (
                   <Text fontSize="xs">
@@ -120,7 +122,7 @@ const MyChats = ({ fetchAgain }) => {
         )}
       </Box>
     </Box>
-  )
-}
+  );
+};
 
-export default MyChats
+export default MyChats;

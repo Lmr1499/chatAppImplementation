@@ -1,6 +1,5 @@
 import React from "react";
 import { Box, Text } from "@chakra-ui/layout";
-import "./styles.css";
 import { IconButton } from "@chakra-ui/react";
 import { FormControl, Input, Spinner, useToast } from "@chakra-ui/react";
 import { getSender, getSenderFull } from "../config/ChatLogics";
@@ -9,7 +8,7 @@ import axios from "axios";
 import { ArrowBackIcon } from "@chakra-ui/icons";
 import ProfileModal from "./miscellaneous/ProfileModal";
 import ScrollableChat from "./ScrollbleChat";
-import Lottie from "react-lottie";
+import { Lottie } from "lottie-react";
 import animationData from "../animations/typing.json";
 import io from "socket.io-client";
 import UpdateGroupChatModal from "./miscellaneous/UpdateGroupChatModa";
@@ -70,6 +69,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       });
     }
   };
+
   useEffect(() => {
     fetchMessages();
 
@@ -226,10 +226,11 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
               {istyping ? (
                 <div>
                   <Lottie
-                    options={defaultOptions}
-                    // height={50}
-                    width={70}
+                    animationData={animationData}
+                    loop={true}
+                    autoplay={true}
                     style={{ marginBottom: 15, marginLeft: 0 }}
+                    width={70}
                   />
                 </div>
               ) : (
@@ -246,7 +247,6 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
           </Box>
         </>
       ) : (
-        // to get socket.io on same page
         <Box
           style={{
             display: "flex",

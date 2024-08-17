@@ -5,6 +5,7 @@ const connectDB = require("./config/db");
 const userRoutes = require("./routes/userRoutes");
 const chatRoutes = require("./routes/chatRoutes");
 const messageRoutes = require("./routes/messageRoutes");
+const reportsRoutes = require("./routes/reportsRoutes");
 const { notFound, errorHandler } = require("./middleware/errorMiddleware");
 const path = require("path");
 
@@ -12,29 +13,12 @@ dotenv.config();
 connectDB();
 const app = express();
 
-app.use(express.json()); // to accept json data
+app.use(express.json());
 
 app.use("/api/user", userRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/message", messageRoutes);
-
-// --------------------------deployment------------------------------
-
-//const __dirname1 = path.resolve();
-
-//if (process.env.NODE_ENV === "production") {
-//app.use(express.static(path.join(__dirname1, "/frontend/build")));
-
-//app.get("*", (req, res) =>
-// res.sendFile(path.resolve(__dirname1, "frontend", "build", "index.html"))
-//);
-//} else {
-//app.get("/", (req, res) => {
-// res.send("API is running..");
-// });
-//}
-
-// --------------------------deployment------------------------------
+app.use("/api/reports", reportsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);
@@ -50,7 +34,6 @@ const io = require("socket.io")(server, {
   pingTimeout: 60000,
   cors: {
     origin: "http://localhost:3000",
-    // credentials: true,
   },
 });
 
