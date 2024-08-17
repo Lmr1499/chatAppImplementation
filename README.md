@@ -26,11 +26,3 @@ To get started with the chat app implementation, follow these steps:
 4. Start the server by running `npm start` in the server directory.
 5. Start the client by running `npm start` in the client directory.
 6. Access the chat app in your browser at `http://localhost:3000`.
-
-## Contributing
-
-Contributions are welcome! If you find any bugs or have suggestions for improvements, please open an issue or submit a pull request.
-
-## License
-
-This project is licensed under the [MIT License](LICENSE).
